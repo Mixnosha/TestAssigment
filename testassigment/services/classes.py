@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import pandas as pd
-from services.reader import read_from_csv_file
+
+from testassigment.services.reader import read_from_csv_file
 
 
 class PlotManager:
@@ -16,7 +17,7 @@ class PlotManager:
         """
         brief: method creates a pandas dataframe based on the csv file.
         parms:
-            file_path: types:str; full path to the file.csv
+            {file_path}: [types:str] full path to the file.csv
         requirements:
             file_format: {Timestamp}, {Price}.
 
@@ -27,37 +28,43 @@ class PlotManager:
 
     @staticmethod
     def format_ohlc(df: pd.DataFrame, time_period: str) -> pd.DataFrame:
-
         """
-        brief: method returns a dataframe in ohlc format.
-        params:
-            df: Pandas:DataFrame; in the form {Timestamp}, {Price}.
-            time_period: types:str; time in pandas standart.
+        Compute open, high, low and close values of a group, excluding missing values.
+
+        For multiple groupings, the result index will be a MultiIndex
+
+        Parameters
+        ----------
+
+        time_period: string
+            Must be in a pandas compatible format.
+
+        Returns
+        -------
+        DataFrame
+            Open, high, low and close values within each group.
         """
 
-        try:
-            return df["Price"].resample(time_period, closed="right").ohlc().ffill()
-        except ValueError as e:
-            print(e)
-            exit()
+        return df["Price"].resample(time_period, closed="right").ohlc().ffill()
 
     @staticmethod
     def add_ema(df: pd.DataFrame, span: float) -> pd.DataFrame:
 
-        """
-        brief: standard pandas function for finding computers EMA.
-            a = 2 / (span + 1), for span >= 1
+        r"""
+        Parameters
+        ----------
+
+        span : float, optional
+            Specify decay in terms of span
+
+            :math:`\alpha = 2 / (span + 1)`, for :math:`span \geq 1`.
         """
 
-        try:
-            return df.assign(
+        return df.assign(
                 ema=df["Price"].ewm(
                     span=span,
                     ).mean()
                 )
-        except ValueError as e:
-            print(e)
-            exit()
 
 
 class Draw:

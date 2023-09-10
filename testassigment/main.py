@@ -1,5 +1,5 @@
-from data import PRICES_FILE_PATH
-from services import Draw, PlotManager
+from testassigment.data import PRICES_FILE_PATH
+from testassigment.services import Draw, PlotManager
 
 
 def run() -> None:
